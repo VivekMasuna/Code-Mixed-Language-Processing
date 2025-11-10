@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import './App.css';
 
 function App() {
@@ -6,6 +6,7 @@ function App() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [exampleSet, setExampleSet] = useState('all'); // 'hinglish' | 'marathlish' | 'all'
 
   const processText = async () => {
     if (!text.trim()) {
@@ -46,7 +47,7 @@ function App() {
     setError('');
   };
 
-  const examples = [
+  const hinglishExamples = [
     "Mera friend aaj party de raha hai",
     "Yeh movie bahut amazing thi!",
     "Tum kahan ho? I am waiting for you",
@@ -55,6 +56,20 @@ function App() {
     "Why are you late? Mujhe wait kar raha tha",
     "Woh restaurant mein delicious khana milta hai"
   ];
+
+  const marathlishExamples = [
+    "Aaj office la meeting aahe, please time var ya",
+    "Kal function la food khup tasty hota, great service",
+    "Tu kuthe ahes? I am waiting outside",
+    "Apan plan udya karu, meeting schedule tight aahe",
+    "Mala coffee pahije, strong one please",
+  ];
+
+  const examples = useMemo(() => {
+    if (exampleSet === 'hinglish') return hinglishExamples;
+    if (exampleSet === 'marathlish') return marathlishExamples;
+    return [...hinglishExamples.slice(0, 3), ...marathlishExamples.slice(0, 3)];
+  }, [exampleSet]);
 
   const loadExample = (exampleText) => {
     setText(exampleText);
@@ -66,13 +81,38 @@ function App() {
     <div className="App">
       <div className="container" role="region" aria-label="Code-Mixed Language Processor">
         <header className="header">
-          <h1>Code-Mixed Language Processor</h1>
-          <p>Intelligent language detection and accurate translation for Hinglish text</p>
+          <h1>Code-Mixed Language Studio</h1>
+          <p>Smart detection and conversion for Hinglish and Marathlish</p>
         </header>
 
         <main>
         <div className="examples-section" aria-labelledby="examples-heading">
-          <h3 id="examples-heading">Try these Hinglish examples:</h3>
+          <div className="examples-top">
+            <h3 id="examples-heading">Try these examples</h3>
+            <div className="segmented">
+              <button
+                className={`seg-btn ${exampleSet === 'all' ? 'active' : ''}`}
+                onClick={() => setExampleSet('all')}
+                aria-pressed={exampleSet === 'all'}
+              >
+                All
+              </button>
+              <button
+                className={`seg-btn ${exampleSet === 'hinglish' ? 'active' : ''}`}
+                onClick={() => setExampleSet('hinglish')}
+                aria-pressed={exampleSet === 'hinglish'}
+              >
+                Hinglish
+              </button>
+              <button
+                className={`seg-btn ${exampleSet === 'marathlish' ? 'active' : ''}`}
+                onClick={() => setExampleSet('marathlish')}
+                aria-pressed={exampleSet === 'marathlish'}
+              >
+                Marathlish
+              </button>
+            </div>
+          </div>
           <div className="examples-grid">
             {examples.map((example, index) => (
               <button
@@ -91,7 +131,7 @@ function App() {
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
-            placeholder="Enter code-mixed text (e.g., 'Mera friend aaj party de raha hai')"
+            placeholder="Enter Hinglish or Marathlish (e.g., 'Aaj office la meeting aahe')"
             rows="4"
             className="text-input"
             aria-label="Input text"
@@ -153,6 +193,18 @@ function App() {
                     </div>
                   </div>
                   <div className="stat-item">
+                    <span className="lang-name marathi">Marathi Words:</span>
+                    <span className="lang-count">{result.language_stats.marathi} words</span>
+                    <div className="progress-bar">
+                      <div 
+                        className="progress-fill marathi"
+                        style={{
+                          width: `${(result.language_stats.marathi / result.word_count) * 100}%`
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                  <div className="stat-item">
                     <span className="lang-name english">English Words:</span>
                     <span className="lang-count">{result.language_stats.english} words</span>
                     <div className="progress-bar">
@@ -174,6 +226,19 @@ function App() {
                     <div className="word-tags">
                       {result.hindi_words.map((word, index) => (
                         <span key={index} className="word-tag hindi-tag">{word}</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {result.marathi_words && result.marathi_words.length > 0 && (
+                <div className="word-lists">
+                  <div className="word-list">
+                    <h4>🟧 Marathi Words Found:</h4>
+                    <div className="word-tags">
+                      {result.marathi_words.map((word, index) => (
+                        <span key={index} className="word-tag marathi-tag">{word}</span>
                       ))}
                     </div>
                   </div>
@@ -215,7 +280,7 @@ function App() {
 
         <footer className="footer" role="contentinfo">
           <small>
-            Built with ❤ for code-mixed text • Supports light/dark automatically
+            Built with ❤ for code-mixed text • Hinglish + Marathlish • Auto light/dark
           </small>
         </footer>
       </div>

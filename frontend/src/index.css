@@ -5,39 +5,44 @@ body { margin: 0; }
 
 /* Theme variables */
 :root {
-  --bg: #f2f5f9;
-  --text: #222426;
-  --muted: #6c757d;
-  --border: #e6e9ef;
+  --bg: #f5f7fb;
+  --text: #1f2430;
+  --muted: #667085;
+  --border: #e5e7ef;
   --card: #ffffff;
 
-  --primary: #4CAF50;
-  --primary-600: #45a049;
-  --primary-700: #2e7d32;
+  /* New vibrant palette */
+  --primary: #6d28d9;
+  --primary-600: #7c3aed;
+  --primary-700: #5b21b6;
 
-  --blue: #2196F3;
-  --green: #4CAF50;
+  --blue: #2ea5ff;
+  --green: #16a34a;
+  --saffron: #ffb300;
+  --saffron-deep: #cc8a00;
 
-  --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
-  --shadow-md: 0 10px 30px rgba(0,0,0,0.18);
+  --shadow-sm: 0 2px 8px rgba(17, 24, 39, 0.08);
+  --shadow-md: 0 12px 28px rgba(17, 24, 39, 0.16);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0f1115;
+    --bg: #0e1117;
     --text: #e6e9ef;
-    --muted: #a2a9b0;
-    --border: #1b1f2a;
-    --card: #111521;
+    --muted: #9aa4b2;
+    --border: #1b2230;
+    --card: #0f1522;
 
-    --primary: #5CCF67;
-    --primary-600: #41b64d;
-    --primary-700: #2d8f38;
+    --primary: #7c3aed;
+    --primary-600: #8b5cf6;
+    --primary-700: #6d28d9;
 
-    --blue: #4aa3ff;
-    --green: #5CCF67;
+    --blue: #60a5fa;
+    --green: #22c55e;
+    --saffron: #ffbc00;
+    --saffron-deep: #e69a00;
     --shadow-sm: 0 2px 8px rgba(0,0,0,0.5);
-    --shadow-md: 0 10px 30px rgba(0,0,0,0.6);
+    --shadow-md: 0 12px 28px rgba(0,0,0,0.6);
   }
 }
 
@@ -45,16 +50,16 @@ body { margin: 0; }
 body {
   font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: var(--text);
-  background: radial-gradient(1200px 800px at 10% 10%, rgba(99, 102, 241, 0.18), transparent 60%),
-              radial-gradient(1000px 800px at 90% 20%, rgba(124, 58, 237, 0.18), transparent 60%),
-              linear-gradient(135deg, #e8eef6 0%, #f8fafc 100%);
+  background: radial-gradient(1200px 800px at 10% 10%, rgba(124, 58, 237, 0.14), transparent 60%),
+              radial-gradient(1000px 800px at 90% 20%, rgba(109, 40, 217, 0.12), transparent 60%),
+              linear-gradient(135deg, #edf2ff 0%, #f8fafc 100%);
   background-color: var(--bg);
 }
 
 @media (prefers-color-scheme: dark) {
   body {
-    background: radial-gradient(1200px 800px at 10% 10%, rgba(99, 102, 241, 0.12), transparent 60%),
-                radial-gradient(1000px 800px at 90% 20%, rgba(124, 58, 237, 0.10), transparent 60%),
+    background: radial-gradient(1200px 800px at 10% 10%, rgba(124, 58, 237, 0.10), transparent 60%),
+                radial-gradient(1000px 800px at 90% 20%, rgba(109, 40, 217, 0.10), transparent 60%),
                 linear-gradient(135deg, #0b0d12 0%, #0f131b 100%);
     background-color: var(--bg);
   }

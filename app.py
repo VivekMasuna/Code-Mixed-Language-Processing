@@ -17,32 +17,34 @@ if not GEMINI_API_KEY:
 client = genai.Client(api_key=GEMINI_API_KEY)
 
 def process_with_gemini(text):
-    """Single Gemini call to handle everything"""
+    """Single Gemini call to handle Hinglish and Marathlish"""
     
     prompt = f"""
-    You are a code-mixed language expert. Process this Hinglish (Hindi+English) text:
+    You are a code-mixed language expert. Process code-mixed text for both Hinglish (Hindi+English) and Marathlish (Marathi+English):
 
     "{text}"
 
     Follow these steps:
 
-    1. **Language Detection**: Determine the main language (Hindi or English) based on which language has more words and provides the sentence structure.
+    1. **Language Detection**: Determine the main language (Hindi, Marathi, or English) based on which language has more words and provides the sentence structure.
 
-    2. **Word Analysis**: Identify individual Hindi and English words in the text.
+    2. **Word Analysis**: Identify individual Hindi, Marathi, and English words in the text.
 
     3. **Translation**: Convert the entire text to the main language while:
        - Keeping the sentence structure natural and grammatical
-       - Only translating words from the non-main language
+       - Only translating words from the non-main languages
        - Preserving the original meaning and context
 
     4. **Return JSON** with this exact structure:
     {{
-        "main_language": "Hindi" or "English",
+        "main_language": "Hindi" or "Marathi" or "English",
         "hindi_words": ["list", "of", "hindi", "words"],
+        "marathi_words": ["list", "of", "marathi", "words"],
         "english_words": ["list", "of", "english", "words"], 
         "converted_text": "the fully converted meaningful sentence",
         "word_count": total_word_count,
         "hindi_count": number_of_hindi_words,
+        "marathi_count": number_of_marathi_words,
         "english_count": number_of_english_words
     }}
 
@@ -53,9 +55,11 @@ def process_with_gemini(text):
         "main_language": "Hindi",
         "hindi_words": ["mera", "aaj", "de", "raha", "hai"],
         "english_words": ["friend", "party"],
+        "marathi_words": [],
         "converted_text": "Mera dost aaj party de raha hai",
         "word_count": 7,
         "hindi_count": 5,
+        "marathi_count": 0,
         "english_count": 2
     }}
 
@@ -64,21 +68,38 @@ def process_with_gemini(text):
         "main_language": "English", 
         "hindi_words": ["tum", "kahan", "ho"],
         "english_words": ["i", "am", "waiting", "for", "you"],
+        "marathi_words": [],
         "converted_text": "Where are you? I am waiting for you",
         "word_count": 8,
         "hindi_count": 3,
+        "marathi_count": 0,
         "english_count": 5
     }}
 
-    Input: "Yeh movie bahut amazing thi!"
+    Input: "Aaj office la meeting aahe, please time var ya"
     Output: {{
-        "main_language": "Hindi",
-        "hindi_words": ["yeh", "bahut", "thi"],
-        "english_words": ["movie", "amazing"],
-        "converted_text": "Yeh film bahut shandaar thi!",
-        "word_count": 5,
-        "hindi_count": 3,
-        "english_count": 2
+        "main_language": "Marathi",
+        "hindi_words": [],
+        "marathi_words": ["aaj", "la", "aahe", "var", "ya"],
+        "english_words": ["office", "meeting", "please", "time"],
+        "converted_text": "Aaj office la meeting aahe, krupaya time var ya",
+        "word_count": 9,
+        "hindi_count": 0,
+        "marathi_count": 5,
+        "english_count": 4
+    }}
+
+    Input: "Kal function la food khup tasty hota, great service"
+    Output: {{
+        "main_language": "Marathi",
+        "hindi_words": [],
+        "marathi_words": ["kal", "la", "khup", "hota"],
+        "english_words": ["function", "food", "tasty", "great", "service"],
+        "converted_text": "Kal function la jevan khup chaan hota, uttam sewa",
+        "word_count": 9,
+        "hindi_count": 0,
+        "marathi_count": 4,
+        "english_count": 5
     }}
 
     Now process this text and return ONLY valid JSON:
@@ -137,10 +158,12 @@ def process_text():
                 'main_language': result.get('main_language', 'Unknown'),
                 'language_stats': {
                     'hindi': result.get('hindi_count', 0),
+                    'marathi': result.get('marathi_count', 0),
                     'english': result.get('english_count', 0)
                 },
                 'word_count': result.get('word_count', 0),
                 'hindi_words': result.get('hindi_words', []),
+                'marathi_words': result.get('marathi_words', []),
                 'english_words': result.get('english_words', [])
             })
         else:
@@ -160,7 +183,9 @@ def test_endpoint():
         "Aaj weather bahut beautiful hai",
         "Mera naam John hai aur main engineer hun",
         "Why are you late? Mujhe wait kar raha tha",
-        "Woh restaurant mein delicious khana milta hai"
+        "Woh restaurant mein delicious khana milta hai",
+        "Aaj office la meeting aahe, please time var ya",
+        "Kal function la food khup tasty hota, great service"
     ]
     
     results = []
